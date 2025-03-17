@@ -10,6 +10,7 @@ export const state = {
     page: 1,
     resultsPerPage: REC_PER_PAGE,
   },
+  bookmarks: [],
 };
 
 export const loadRecipe = async function (id) {
@@ -46,7 +47,7 @@ export const loadSearchResults = async function (query) {
         image: rec.image_url,
       };
     });
-    console.log(data);
+    state.search.page = 1;
   } catch (error) {
     throw error;
   }
@@ -58,4 +59,12 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const end = page * state.search.resultsPerPage;
 
   return state.search.results.slice(start, end);
+};
+
+export const updateServings = function (newServings) {
+  state.recipe.ingredients.forEach(ing => {
+    // newQty = OldQty * newServings / oldServings
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+  });
+  state.recipe.servings = newServings;
 };
